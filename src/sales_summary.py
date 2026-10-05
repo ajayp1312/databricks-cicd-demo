@@ -4,7 +4,7 @@ from pyspark.sql import functions as F
 
 # COMMAND ----------
 
-print("Sales summary demo - version 1")
+print("Sales summary demo - version 1aa")
 
 sales = spark.createDataFrame(
     [
