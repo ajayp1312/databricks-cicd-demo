@@ -1,0 +1,36 @@
+bundle:
+  name: beginner_sales_demo
+
+variables:
+  node_type:
+    description: Azure VM type for the demo job cluster
+    default: Standard_Ds3_v2
+
+resources:
+  jobs:
+    sales_job:
+      name: beginner-sales-summary-${bundle.target}
+      max_concurrent_runs: 1
+      timeout_seconds: 1800
+
+      tasks:
+        - task_key: summarize_sales
+          job_cluster_key: demo_cluster
+          max_retries: 0
+          notebook_task:
+            notebook_path: ./src/sales_summary.py
+
+      job_clusters:
+        - job_cluster_key: demo_cluster
+          new_cluster:
+            spark_version: 15.4.x-scala2.12
+            node_type_id: ${var.node_type}
+            kind: CLASSIC_PREVIEW
+            is_single_node: true
+            data_security_mode: SINGLE_USER
+
+targets:
+  dev:
+    default: true
+    workspace:
+      root_path: /Workspace/Users/${workspace.current_user.userName}/.bundle/${bundle.name}/${bundle.target}
